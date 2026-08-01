@@ -36,6 +36,24 @@ _openai_client = openai.Client(api_key=_OPENAI_API_KEY) if _OPENAI_API_KEY else 
 _OPENAI_MODELS = ["gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo"]
 
 
+def _strip_markdown_fence(text: str) -> str:
+    """Remove a wrapping ``` / ```markdown fence if the model added one."""
+    if not text:
+        return text
+    stripped = text.strip()
+    # Whole-string fence
+    if stripped.startswith("```"):
+        lines = stripped.splitlines()
+        if len(lines) >= 2 and lines[0].startswith("```"):
+            # Drop opening fence line
+            lines = lines[1:]
+            # Drop closing fence line if present
+            if lines and lines[-1].strip() == "```":
+                lines = lines[:-1]
+            return "\n".join(lines).strip()
+    return stripped
+
+
 def _call_openai(system_prompt: str, user_content: str) -> str:
     """Call OpenAI with model fallback and simple rate-limit handling."""
     if _openai_client is None:
@@ -165,10 +183,10 @@ def generate_intake_doc(
         Legal Aid Organisations (from MCP lookup):
         {org_block.strip() or 'No organisations retrieved.'}
 
-        Follow the document template exactly. Return only the Markdown document — no preamble.
+        Follow the document template exactly. Return only the Markdown document — no preamble, no code fences.
     """).strip()
 
-    document = _call_openai(system_prompt, user_content)
+    document = _strip_markdown_fence(_call_openai(system_prompt, user_content))
 
     return {
         "status": "success",

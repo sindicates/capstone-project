@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from typing import Optional
 import os
-import asyncio
 import traceback
 import uuid
 
@@ -20,21 +20,33 @@ runner = InMemoryRunner(app=triage_app)
 
 class TriageRequest(BaseModel):
     description: str
+    user_id: Optional[str] = None
+    session_id: Optional[str] = None
 
 @app.post("/api/triage")
 async def triage_endpoint(request: TriageRequest):
     try:
-        user_id = str(uuid.uuid4())
-        session = await runner.session_service.create_session(app_name="triage_app", user_id=user_id)
-        
+        if request.user_id and request.session_id:
+            user_id = request.user_id
+            session_id = request.session_id
+        else:
+            user_id = str(uuid.uuid4())
+            session = await runner.session_service.create_session(
+                app_name="triage_app", user_id=user_id
+            )
+            session_id = session.id
+
         events = []
         async for event in runner.run_async(
             user_id=user_id,
-            session_id=session.id,
-            new_message=types.Content(role="user", parts=[types.Part.from_text(text=request.description)])
+            session_id=session_id,
+            new_message=types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=request.description)],
+            ),
         ):
             events.append(event)
-        
+
         # Get the final text output from the agent
         final_text = ""
         for e in reversed(events):
@@ -43,11 +55,15 @@ async def triage_endpoint(request: TriageRequest):
                 if texts:
                     final_text = "\n".join(texts)
                     break
-        
+
         if not final_text:
             final_text = "Analysis complete, but no text output was provided."
-            
-        return {"result": final_text}
+
+        return {
+            "result": final_text,
+            "user_id": user_id,
+            "session_id": session_id,
+        }
     except Exception as e:
         traceback.print_exc()
         return JSONResponse(status_code=500, content={"error": str(e)})

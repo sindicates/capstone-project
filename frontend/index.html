@@ -39,11 +39,17 @@
                 </div>
 
                 <div id="result-section" class="section hidden">
-                    <h2>Intake Summary</h2>
+                    <h2 id="result-heading">Intake Summary</h2>
                     <div id="result-content" class="document">
                         <!-- Result from API will be rendered here -->
                     </div>
-                    <button id="reset-btn" class="secondary-btn">New Case</button>
+                    <form id="reply-form" class="reply-form">
+                        <textarea id="reply" placeholder="Add details or answer the questions above..." rows="4"></textarea>
+                        <div class="result-actions">
+                            <button type="submit" id="continue-btn">Continue</button>
+                            <button type="button" id="reset-btn" class="secondary-btn">New Case</button>
+                        </div>
+                    </form>
                 </div>
             </main>
 

@@ -127,10 +127,34 @@ button.secondary-btn {
     background-color: transparent;
     border: 1px solid var(--accent-brass);
     color: var(--accent-brass);
-    margin-top: 2rem;
+    margin-top: 0;
 }
 button.secondary-btn:hover {
     background-color: rgba(226, 184, 135, 0.1);
+}
+
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.reply-form textarea {
+    min-height: 100px;
+    margin-top: 0;
+}
+
+.result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    align-items: center;
+}
+
+.result-actions button {
+    margin-top: 0;
 }
 
 /* Processing Skeleton */
@@ -274,6 +298,57 @@ button.secondary-btn:hover {
     background-color: rgba(255, 255, 255, 0.05);
     color: var(--accent-brass);
     font-weight: 600;
+}
+
+.document strong {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.document em {
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.document blockquote {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--accent-brass);
+    background-color: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
+}
+
+.document code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9em;
+    background-color: rgba(255, 255, 255, 0.06);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+}
+
+.document pre {
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+}
+
+.document pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.9rem;
+}
+
+.document input[type="checkbox"] {
+    margin-right: 0.5rem;
+    accent-color: var(--accent-brass);
+    vertical-align: middle;
+}
+
+.document li:has(> input[type="checkbox"]) {
+    list-style: none;
+    margin-left: -1.5rem;
 }
 
 /* Footer */

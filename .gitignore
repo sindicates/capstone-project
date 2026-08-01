@@ -1,4 +1,5 @@
 .venv/*
 .env.local
+.env
 legal_triage/.env
 mcp_config.json
